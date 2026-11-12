@@ -1,0 +1,94 @@
+# ---------- Rust ----------
+# Build artifacts
+target/
+**/target/
+
+# Debug / profiling
+**/*.rs.bk
+*.pdb
+*.profraw
+*.profdata
+flamegraph.svg
+perf.data*
+
+# Cargo.lock: descomenta si es una librería (en apps/binarios SÍ se versiona)
+# Cargo.lock
+
+# ---------- Tauri ----------
+# Generado por Tauri
+**/src-tauri/target/
+**/src-tauri/gen/schemas/
+**/src-tauri/gen/android/.gradle/
+**/src-tauri/gen/android/build/
+**/src-tauri/gen/android/app/build/
+**/src-tauri/gen/android/local.properties
+**/src-tauri/gen/apple/build/
+**/src-tauri/gen/apple/Externals/
+**/src-tauri/WixTools/
+
+# Claves de firma del updater / certificados
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.mobileprovision
+.tauri/
+
+# ---------- Frontend (Node) ----------
+node_modules/
+dist/
+dist-ssr/
+.vite/
+.svelte-kit/
+.next/
+.nuxt/
+.output/
+.turbo/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# Gestores de paquetes (mantén solo el lockfile que uses)
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ---------- Entorno / secretos ----------
+.env
+.env.*
+!.env.example
+
+# ---------- Logs ----------
+*.log
+logs/
+
+# ---------- IDEs / editores ----------
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+*.iml
+*.suo
+*.swp
+*.swo
+*~
+
+# ---------- Sistema operativo ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+
+# ---------- Claude Code ----------
+.claude/settings.local.json
