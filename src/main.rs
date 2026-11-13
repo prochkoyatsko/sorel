@@ -1,5 +1,3 @@
-use std::convert;
-
 struct Tarea {
     titulo: String,
     completada: bool,
@@ -33,70 +31,96 @@ fn main() {
         dias_restantes: 0,
     });
 
-    let primera = &mis_tareas[0];
-    println!("{}", primera.titulo);
+    // let primera = &mis_tareas[0];
+    // println!("{}", primera.titulo);
 
-    println!("Hay {} tareas en la lista", mis_tareas.len());
+    // println!("Hay {} tareas en la lista", mis_tareas.len());
 
-    mostrar(&mis_tareas);
+    // mostrar(&mis_tareas);
 
-    println!("-----------------------");
+    // println!("-----------------------");
 
-    comenzar(&mut mis_tareas[0]);
-    completar(&mut mis_tareas[2]);
+    // comenzar(&mut mis_tareas[0]);
+    // ompletar(&mut mis_tareas[2]);
 
-    mostrar(&mis_tareas);
+    // mostrar(&mis_tareas);
 
-    println!("-----------------------");
+    // println!("-----------------------");
 
-    let t = Tarea {
-        titulo: String::from("Firmar el documento de prácticas."),
-        completada: false,
-        dias_restantes: 10,
-    };
+    // let t = Tarea {
+    //     titulo: String::from("Firmar el documento de prácticas."),
+    //     completada: false,
+    //     dias_restantes: 10,
+    // };
 
-    archivar(&t);
+    // archivar(&t);
 
-    println!("-----------------------");
+    // println!("-----------------------");
 
-    let total: i32 = contar_urgentes(&mis_tareas);
-    println!("Tareas urgentes: {}", total);
-}
+    // let total: i32 = contar_urgentes(&mis_tareas);
+    // println!("Tareas urgentes: {}", total);
 
-fn mostrar(mis_tareas: &Vec<Tarea>) {
-    for tarea in mis_tareas {
-        let res_es_urgente: bool = es_urgente(tarea.dias_restantes);
-        println!(
-            "Tarea: {} | Completada: {} | Dias restantes: {} | ¿Urgente? {}",
-            tarea.titulo, tarea.completada, tarea.dias_restantes, res_es_urgente
-        );
+    match buscar_por_titulo(&mis_tareas, "Terminar el fase 2 extra") {
+        Some(i) => println!("Encontrada en la posición {}", i),
+        None => println!("No existe"),
+    }
+
+    let mut texto = "3";
+    print!("{}", texto);
+    
+    match  texto.parse() {
+        Ok()
+        Err(err) => println!("Parsing error: {}", err),  
     }
 }
 
-fn es_urgente(dias_restantes: i32) -> bool {
-    dias_restantes <= 2
+fn texto_parseado (texto) {
+
 }
 
-fn completar(tarea: &mut Tarea) {
-    tarea.completada = true
-}
-
-fn comenzar(tarea: &mut Tarea) {
-    tarea.completada = false
-}
-
-fn archivar(tarea: &Tarea) {
-    println!("Archivada: {} ", tarea.titulo);
-}
-
-fn contar_urgentes(lista: &Vec<Tarea>) -> i32 {
-    let mut contador: i32 = 0;
-
-    for tarea in lista {
-        if es_urgente(tarea.dias_restantes) {
-            contador += 1
+fn buscar_por_titulo(lista: &Vec<Tarea>, titulo: &str) -> Option<usize> {
+    for (i, tarea) in lista.iter().enumerate() {
+        if tarea.titulo == titulo {
+            return Some(i);
         }
     }
-
-    contador
+    None
 }
+
+// fn mostrar(mis_tareas: &Vec<Tarea>) {
+//     for tarea in mis_tareas {
+//         let res_es_urgente: bool = es_urgente(tarea.dias_restantes);
+//         println!(
+//             "Tarea: {} | Completada: {} | Dias restantes: {} | ¿Urgente? {}",
+//             tarea.titulo, tarea.completada, tarea.dias_restantes, res_es_urgente
+//         );
+//     }
+// }
+
+// fn es_urgente(dias_restantes: i32) -> bool {
+//     dias_restantes <= 2
+// }
+
+// fn completar(tarea: &mut Tarea) {
+//     tarea.completada = true
+// }
+
+// fn comenzar(tarea: &mut Tarea) {
+//     tarea.completada = false
+// }
+
+// fn archivar(tarea: &Tarea) {
+//     println!("Archivada: {} ", tarea.titulo);
+// }
+
+//  fn contar_urgentes(lista: &Vec<Tarea>) -> i32 {
+//     let mut contador: i32 = 0;
+
+//     for tarea in lista {
+//         if es_urgente(tarea.dias_restantes) {
+//             contador += 1
+//         }
+//     }
+
+//     contador
+// }

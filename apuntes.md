@@ -1,14 +1,31 @@
 # Apuntes de Rust (proyecto tareas)
 
 Proyecto: gestor de tareas en Rust, con idea de pasarlo luego a Tauri y, a largo plazo, un asistente personal local.
-Ruta del proyecto: `D:\proyectos\personales\sorel\task`
+Ruta del proyecto: `D:\dev\personales\sorel` (repo git; el paquete Cargo se llama `task`)
 
 ## Dónde me quedé
 
 - Fase 0: terminada.
 - Fase 1: terminada (struct, Vec, ownership y préstamo con `&`).
 - Refuerzo de ownership (`&mut`, conflicto de préstamos, mover vs prestar, `contar_urgentes`): terminado.
-- **Siguiente: Fase 2** (guardar y cargar tareas en JSON). Aún no empezada.
+- **Fase 2 (guardar y cargar tareas en JSON): EN CURSO.**
+  - Paso 1, `Option` (`buscar_por_titulo`): terminado y correcto.
+  - Paso 2, `Result` con `.parse()`: **por aquí me quedé** (ver "Punto exacto" abajo).
+  - Pasos 3 y 4 (serde/JSON, `std::fs` y `?`, integrarlo en `main`): pendientes.
+
+### Punto exacto donde lo dejé (para retomar en otro ordenador)
+
+Estoy en `main.rs`, al final de `main`, con el ejercicio de convertir `"3"` (texto) a `i32` con `.parse()` y tratar los dos casos con `match`. El código está **a medias y no compila**:
+
+- El `match texto.parse() { ... }` tiene la rama `Ok()` sin terminar: le falta el valor que recibe (como hacía `Some(i)`) y qué imprimir.
+- Falta decirle a `.parse()` a qué tipo convertir (dos formas: anotar el tipo en el `let` o escribir `::<i32>` en la llamada).
+- `let mut texto` no necesita `mut`.
+- Hay una función vacía `fn texto_parseado (texto) {}` que sobra (sin tipos en el parámetro, no compila). Borrarla o convertirla en una función de verdad con su tipo y su retorno.
+- **Limpiar `prse`**: se coló una dependencia equivocada (`prse = "1.2.1"` en `Cargo.toml` y `use prse::parse;`). No se necesita: `.parse()` es un método de `&str` que viene de serie. Quitarla del `Cargo.toml` y del código.
+
+Por hacer en este paso: probar con `"3"` y luego con `"hola"`, imprimiendo el error con `{:?}`, y apuntar qué contiene el `Err`.
+
+Para retomar: `git pull` (o copiar la carpeta), abrir la carpeta que contiene `Cargo.toml` en VS Code y `cargo run`.
 
 ## Entorno instalado
 
@@ -225,6 +242,44 @@ fn contar_urgentes(lista: &Vec<Tarea>) -> i32 {
 
 Si se olvida esa última línea: `mismatched types: expected i32, found ()`.
 
+## Fase 2: Option y Result
+
+**Idea.** Rust no tiene `null` ni excepciones: si algo puede fallar, el fallo va en el tipo que devuelve la función. Son cajas que obligan a tratar todos los casos con `match`.
+
+| Tipo | Significa | Variantes |
+|---|---|---|
+| `Option<T>` | Hay valor o no hay | `Some(valor)` / `None` (caja vacía, sin explicación) |
+| `Result<T, E>` | Salió bien o mal, y por qué | `Ok(valor)` / `Err(error)` (el error trae información) |
+
+- Un `Option` evita inventarse un número para "no encontrado" (el 0 y el -1 se confunden con posiciones reales).
+- `usize` es el tipo de las posiciones de una lista.
+- Si en un `match` falta un caso, no compila: el error dice exactamente qué falta.
+
+**`Option` en la práctica (hecho):**
+
+```rust
+fn buscar_por_titulo(lista: &Vec<Tarea>, titulo: &str) -> Option<usize> {
+    for (i, tarea) in lista.iter().enumerate() {
+        if tarea.titulo == titulo {
+            return Some(i);
+        }
+    }
+    None
+}
+```
+
+- `.iter().enumerate()` da la posición y el elemento a la vez, en una tupla `(i, tarea)`.
+- `return` sale de la función antes de acabar el bucle.
+- El `None` final solo se alcanza si el bucle nunca encontró nada.
+
+**`Result` con `.parse()` (en curso):**
+- `.parse()` devuelve `Result` porque convertir texto a número puede fallar.
+- Es un método (con punto, sin `!`) que ya tienen todos los `&str`: no se importa nada.
+- No sabe a qué tipo convertir si no se lo indicas.
+- Para depurar un valor que no sabe mostrarse solo se usa `{:?}` en vez de `{}`.
+
+**Método de trabajo que funciona:** hacer cada ejercicio por pasos pequeños y compilar tras cada uno (firma vacía, recorrer, añadir posición, comparar, devolver, `match`).
+
 ## Errores que he visto y qué significan
 
 | Error | Causa |
@@ -237,15 +292,16 @@ Si se olvida esa última línea: `mismatched types: expected i32, found ()`.
 | `cannot borrow as mutable because it is also borrowed as immutable` | Hay un préstamo de lectura abierto mientras intento modificar |
 | `cannot move out of ... behind a shared reference` | Llaves `{ }` extra en `println!` que mueven el valor de un préstamo |
 | `mismatched types: expected i32, found ()` | La función no devuelve nada: falta la última línea sin `;` |
+| Sugerencia de import `use prse::parse;` | El editor ofreció un import automático de una librería externa. `parse!(...)` con `!` no es lo mismo que `.parse()` (método de `&str`). No importar nada |
 
 ## Próximos pasos
 
-Hecho: Fase 0, Fase 1 y el refuerzo de ownership.
+Hecho: Fase 0, Fase 1, el refuerzo de ownership y el paso 1 de la Fase 2 (`Option`).
 
 Pendiente, en este orden:
 
-1. **Fase 2 (la siguiente): guardar y cargar tareas en un archivo JSON.**
-   - `Result` y `Option` (manejo de errores sin excepciones).
+1. **Fase 2 (en curso): guardar y cargar tareas en un archivo JSON.**
+   - `Option` (hecho) y `Result` (en curso): manejo de errores sin excepciones.
    - Crates `serde` y `serde_json` con `cargo add`.
    - `#[derive(Serialize, Deserialize)]` en el struct para convertirlo a JSON.
    - Leer y escribir archivos (`std::fs`) y el operador `?`.
