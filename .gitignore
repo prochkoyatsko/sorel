@@ -92,3 +92,7 @@ $RECYCLE.BIN/
 
 # ---------- Claude Code ----------
 .claude/settings.local.json
+
+# ---------- Datos personales de la app ----------
+tareas.json
+tareas_old.json
